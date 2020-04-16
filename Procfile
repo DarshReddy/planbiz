@@ -1,1 +1,1 @@
-web: gunicorn planbiz.wsgi --log-file -
+web: gunicorn planb.wsgi --log-file -
