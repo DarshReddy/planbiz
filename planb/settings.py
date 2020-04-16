@@ -24,7 +24,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    'https://planbiz.herokuapp.com/',
+    'planbiz.herokuapp.com',
 ]
 
 SECRET_KEY = config('SECRET_KEY')
