@@ -128,13 +128,19 @@ class DateMatchViewSet(viewsets.ModelViewSet):
       rst = Restaurant.objects.get(resID=request.data['restaurant'])
       dates = DateMatch.objects.filter(restaurant=rst)
       time = datetime.now() - timedelta(hours=1)
-      dates = DateMatch.objects.filter(timeofvisit__lte = time)
+      dates = dates.filter(timeofvisit__gte = time)
+
       if request.user.is_female:
         dates = dates.filter(dateaccepted = False).exclude(guy = None)
       else:
         dates = dates.filter(dateaccepted = False).exclude(girl = None)
-      serializer = DateMatchSerializer(dates, many=True)
-      return Response(serializer.data, status=status.HTTP_200_OK)
+
+      if len(dates)!=0:
+        serializer = DateMatchSerializer(dates, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+      else:
+        print("create")
+        return DateMatchViewSet.create(self, request)
     else:
       response = {'message': 'Provide restaurant details'}
       return Response(response, status=status.HTTP_400_BAD_REQUEST)
@@ -143,16 +149,17 @@ class DateMatchViewSet(viewsets.ModelViewSet):
   def accept_date(self, request, pk=None):
 
     date = DateMatch.objects.get(id=pk)
-    dateaccepted = True
+    date.dateaccepted = True
     if request.user.is_female:
       date.girl = request.user
     else:
       date.guy = request.user
-    if not VisitRating.objects.get(rated_date=date):
+    try:
+      vserializer = VisitRatingSerializer(VisitRating.objects.get(rated_date=date))
+    except:
       visit = VisitRating.objects.create(guy=date.guy, girl=date.girl, rated_date=date)
       vserializer = VisitRatingSerializer(visit)
-    else:
-      vserializer = VisitRatingSerializer(VisitRating.objects.get(rated_date=date))
+      
     serializer = DateMatchSerializer(date)
     response = {'message': 'Date accepted','result': serializer.data, 'rating': vserializer.data }
     return Response(response, status=status.HTTP_200_OK)

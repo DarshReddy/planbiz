@@ -23,8 +23,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
     'planbiz.herokuapp.com',
+    '127.0.0.1'
 ]
 
 SECRET_KEY = config('SECRET_KEY')
