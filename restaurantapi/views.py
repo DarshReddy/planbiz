@@ -121,7 +121,7 @@ class DateMatchViewSet(viewsets.ModelViewSet):
       response = {'message': 'Please provide all details'}
       return Response(response, status=status.HTTP_400_BAD_REQUEST)
     
-  @action(detail=False)
+  @action(detail=False,methods=['POST'])
   def check_dates(self, request, *args, **kwargs):
 
     if 'restaurant' in request.data:
