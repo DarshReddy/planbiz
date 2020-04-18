@@ -122,4 +122,5 @@ class GetRst:
             else:
                 rsts = GetRst.getRestaurants(lat,lon)
             all_rsts+=rsts
+        all_rsts = [dict(t) for t in {tuple(d.items()) for d in all_rsts}]
         return all_rsts

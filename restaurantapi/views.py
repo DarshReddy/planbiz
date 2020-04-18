@@ -111,12 +111,12 @@ class DateMatchViewSet(viewsets.ModelViewSet):
         datematch = DateMatch.objects.create(girl=request.user,restaurant=rst)
         serializer = DateMatchSerializer(datematch)
         response = {'message': 'Date Created', 'result': serializer.data}
-        return Response(response, status=status.HTTP_200_OK)
+        return Response(response, status=status.HTTP_201_CREATED)
       else:
         datematch = DateMatch.objects.create(guy=request.user,restaurant=rst)
         serializer = DateMatchSerializer(datematch)
         response = {'message': 'Date Created', 'result': serializer.data}
-        return Response(response, status=status.HTTP_200_OK)
+        return Response(response, status=status.HTTP_201_CREATED)
     else:
       response = {'message': 'Please provide all details'}
       return Response(response, status=status.HTTP_400_BAD_REQUEST)
@@ -137,7 +137,8 @@ class DateMatchViewSet(viewsets.ModelViewSet):
 
       if len(dates)!=0:
         serializer = DateMatchSerializer(dates, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        response = {'dates': serializer.data}
+        return Response(response, status=status.HTTP_200_OK)
       else:
         print("create")
         return DateMatchViewSet.create(self, request)
