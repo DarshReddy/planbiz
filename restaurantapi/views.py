@@ -153,8 +153,10 @@ class DateMatchViewSet(viewsets.ModelViewSet):
     date.dateaccepted = True
     if request.user.is_female:
       date.girl = request.user
+      date.save()
     else:
       date.guy = request.user
+      date.save()
     try:
       vserializer = VisitRatingSerializer(VisitRating.objects.get(rated_date=date))
     except:

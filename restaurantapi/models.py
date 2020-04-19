@@ -89,7 +89,7 @@ class Restaurant(models.Model):
   Locality = models.CharField(max_length=128)
   Avg_cost = models.IntegerField()
   Cuisines = models.CharField(max_length=256)
-  Img_url = models.CharField(max_length=256)
+  Img_url = models.CharField(max_length=256, blank=True)
 
 class HasVisited(models.Model):
   user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
