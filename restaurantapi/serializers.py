@@ -7,7 +7,7 @@ from .models import Restaurant, HasVisited, VisitRating, DateMatch, MyUser
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = MyUser
-    fields = ('id', 'email', 'password','is_female')
+    fields = ('id', 'email', 'password','is_female','avg_rating')
     extra_kwargs = {'password': {'write_only': True,
     'required': True}}
 
@@ -33,8 +33,25 @@ class VisitRatingSerializer(serializers.ModelSerializer):
     fields = ('id','guy', 'girl', 'rated_date', 'rating1', 'rating2', 'dayofvisit')
 
 class DateMatchSerializer(serializers.ModelSerializer):
+  male = serializers.SerializerMethodField()
+  female = serializers.SerializerMethodField()
+
   class Meta:
     model = DateMatch
-    fields = ('id','guy', 'girl', 'restaurant', 'dateaccepted','timeofvisit')
+    fields = ('id','guy', 'girl', 'restaurant', 'dateaccepted','timeofvisit', 'female', 'male')
+
+  def get_male(self, obj):
+    try:
+      male = MyUser.objects.get(email=obj.guy)
+      return UserSerializer(male).data
+    except Exception as e:
+      return {}
+  
+  def get_female(self, obj):
+    try:
+      female = MyUser.objects.get(email=obj.girl)
+      return UserSerializer(female).data
+    except Exception as e:
+      return {}
 
 

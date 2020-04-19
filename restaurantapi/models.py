@@ -67,6 +67,21 @@ class MyUser(AbstractBaseUser):
       # Simplest possible answer: All admins are staff
       return self.is_admin
 
+  def avg_rating(self):
+    sum_rating = 0
+    if(self.is_female):
+      ratings = VisitRating.objects.filter(girl=self)
+      for rating in ratings:
+        sum_rating += rating.rating2
+    else:
+      ratings = VisitRating.objects.filter(guy=self)
+      for rating in ratings:
+        sum_rating += rating.rating1
+    if len(ratings) > 0:
+      return sum_rating / len(ratings)
+    else:
+      return 0
+
 class Restaurant(models.Model):
   resID = models.IntegerField(primary_key=True)
   Name = models.CharField(max_length=32)
