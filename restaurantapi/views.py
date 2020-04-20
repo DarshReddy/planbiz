@@ -4,6 +4,9 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from fcm_django.models import FCMDevice
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 
 from .models import DateMatch, HasVisited, MyUser, Restaurant, VisitRating, MyUser
 from .serializers import (DateMatchSerializer, HasVisitedSerializer,
@@ -16,6 +19,34 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = MyUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = (AllowAny,)
+
+    def create(self, request, *args, **kwargs):
+      if 'token' and 'is_female' in request.data:
+        user = MyUser.objects.create(email=request.data['email'],is_female=request.data['is_female'])
+        user.set_password(request.data['password'])
+        user.save()
+        fcm = FCMDevice.objects.create(registration_id=request.data['token'],user=user, type='android')
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+      else:
+        response = {'message': 'provide all details'}
+        Response(response, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class CustomAuthToken(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        fcm = FCMDevice.objects.get(user=user)
+        fcm.registration_id = request.data['token']
+        fcm.save()
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key
+        })
 
 class RestaurantViewSet(viewsets.ModelViewSet):
   queryset = Restaurant.objects.all()

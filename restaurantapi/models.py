@@ -3,14 +3,11 @@ from django.contrib.auth.models import User, AbstractBaseUser, BaseUserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from django.conf import settings
+from fcm_django.models import FCMDevice
 
 # Create your models here.
 class MyUserManager(BaseUserManager):
     def create_user(self, email, is_female, password=None):
-        """
-        Creates and saves a User with the given email, date of
-        birth and password.
-        """
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -18,7 +15,7 @@ class MyUserManager(BaseUserManager):
             email=self.normalize_email(email),
             is_female = is_female,
         )
-
+        
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -29,10 +26,10 @@ class MyUserManager(BaseUserManager):
         birth and password.
         """
         user = self.create_user(
-            email,
-            password=password,
+            email=email,
             is_female=is_female,
         )
+        user.set_password(password)
         user.is_admin = True
         user.save(using=self._db)
         return user

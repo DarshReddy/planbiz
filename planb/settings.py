@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_cron',
+    'fcm_django',
 ]
 
 MIDDLEWARE = [
@@ -60,6 +61,10 @@ MIDDLEWARE = [
 CRON_CLASSES = [
     'restaurantapi.cron.MyCronJob',
 ]
+
+FCM_DJANGO_SETTINGS = {
+    "FCM_SERVER_KEY": "AAAA-uxh9Ug:APA91bFPxE6lJucP_8L4dJ9kRLNvwJU1RgUGR9tq8g3GI_HrAYuK5_pGH87iASIyPTwh2SH7AixB-99uHZ7Tfe5TrurW9arJEAeg8-f8yC31BAppmIxvkAcJ_H2H-HjpqllEw0AkBMhL",
+}
 
 ROOT_URLCONF = 'planb.urls'
 
