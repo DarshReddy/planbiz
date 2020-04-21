@@ -184,9 +184,13 @@ class DateMatchViewSet(viewsets.ModelViewSet):
     date.dateaccepted = True
     if request.user.is_female:
       date.girl = request.user
+      fcm = FCMDevice.objects.get(user=date.guy)
+      fcm.send_message(title='You got a date!',body='message',data={"call_frag":2,"pk":pk,"is_female":False})
       date.save()
     else:
       date.guy = request.user
+      fcm = FCMDevice.objects.get(user=date.girl)
+      fcm.send_message(title='You got a date!',body='message',data={"call_frag":2,"pk":pk,"is_female":True})
       date.save()
     try:
       vserializer = VisitRatingSerializer(VisitRating.objects.get(rated_date=date))
