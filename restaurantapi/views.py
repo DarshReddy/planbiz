@@ -64,7 +64,7 @@ class HasVisitedViewSet(viewsets.ModelViewSet):
     if 'restaurant' in request.data:
       user = request.user
       restaurant = Restaurant.objects.get(resID=request.data['restaurant'])
-      dayofvisit = timezone.now()
+      dayofvisit = datetime.now()
       visit = HasVisited.objects.create(user=user,restaurant=restaurant,dayofvisit=dayofvisit)
       serializer = HasVisitedSerializer(visit, many=False)
       response = {'message': 'Visit Updated', 'result': serializer.data}
@@ -72,6 +72,13 @@ class HasVisitedViewSet(viewsets.ModelViewSet):
     else:
       response = {'message': 'you need to provide restaurant'}
       return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+  @action(detail=False, methods=['POST','GET'])
+  def my_visits(self,request):
+    visits = HasVisited.objects.filter(user=request.user)
+    serializer = HasVisitedSerializer(visits, many=True)
+    response = {'visits': serializer.data}
+    return Response(response, status=status.HTTP_200_OK)
 
   @action(detail=False, methods=['POST','GET'])
   def get_visits(self, request):
@@ -110,10 +117,8 @@ class VisitRatingViewSet(viewsets.ModelViewSet):
       try:
         rating = VisitRating.objects.get(rated_date=date)
         if request.user.is_female:
-          rating.girl = request.user
           rating.rating2 = request.data['stars']
         else:
-          rating.guy = request.user
           rating.rating1 = request.data['stars']
         serializer = VisitRatingSerializer(rating)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -182,8 +187,12 @@ class DateMatchViewSet(viewsets.ModelViewSet):
 
     date = DateMatch.objects.get(id=pk)
     date.dateaccepted = True
+    try:
+      visit = HasVisited.objects.get(user=request.user,restaurant=date.restaurant)
+    except:
+      visit = HasVisited.objects.create(user=request.user,restaurant=date.restaurant)
+    visit.save()
     if request.user.is_female:
-      date.girl = request.user
       fcm = FCMDevice.objects.get(user=date.guy)
       fcm.send_message(data={"call_frag":2,"pk":pk,"is_female":False,"datemail":request.user.email})
       date.save()

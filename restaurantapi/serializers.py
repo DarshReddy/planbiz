@@ -23,9 +23,18 @@ class RestaurantSerializer(serializers.ModelSerializer):
     fields = ('resID', 'Name', 'Url', 'Locality', 'Avg_cost', 'Cuisines', 'Img_url')
 
 class HasVisitedSerializer(serializers.ModelSerializer):
+  rest = serializers.SerializerMethodField()
+
   class Meta:
     model = HasVisited
-    fields = ('id','user','restaurant','dayofvisit')
+    fields = ('id','user','restaurant','dayofvisit','rest')
+
+  def get_rest(self, obj):
+    try:
+      rest = Restaurant.objects.get(resID=obj.restaurant.resID)
+      return RestaurantSerializer(rest).data
+    except Exception as e:
+      return {}
 
 class VisitRatingSerializer(serializers.ModelSerializer):
   class Meta:
