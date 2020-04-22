@@ -67,11 +67,11 @@ class MyUser(AbstractBaseUser):
   def avg_rating(self):
     sum_rating = 0
     if(self.is_female):
-      ratings = VisitRating.objects.filter(girl=self)
+      ratings = VisitRating.objects.filter(girl=self,rating1__gte=1)
       for rating in ratings:
         sum_rating += rating.rating2
     else:
-      ratings = VisitRating.objects.filter(guy=self)
+      ratings = VisitRating.objects.filter(guy=self,rating2__gte=1)
       for rating in ratings:
         sum_rating += rating.rating1
     if len(ratings) > 0:
