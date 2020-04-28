@@ -92,7 +92,7 @@ class GetRst:
                     jso["Name"]=data[x]
                     jso["Cuisines"]=cuisines[x]
                     jso["resID"]=rid[x]
-                    jso["Rating"]=rid[x]
+                    jso["Rating"]=rating[x]
                     rst_list.append(jso.copy())
             else:
                 jso = {}
@@ -103,7 +103,7 @@ class GetRst:
                 jso["Name"]=data[x]
                 jso["Cuisines"]=cuisines[x]
                 jso["resID"]=rid[x]
-                jso["Rating"]=rid[x]
+                jso["Rating"]=rating[x]
                 rst_list.append(jso.copy())
 
         return rst_list
