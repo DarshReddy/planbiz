@@ -117,21 +117,15 @@ class VisitRatingViewSet(viewsets.ModelViewSet):
   def rate_now(self, request, pk=None):
     if 'rated_date' and 'stars' in request.data:
       date = DateMatch.objects.get(id=request.data['rated_date'])
-      try:
-        rating = VisitRating.objects.get(rated_date=date)
-        if request.user.is_female:
-          rating.rating2 = request.data['stars']
-        else:
-          rating.rating1 = request.data['stars']
-        serializer = VisitRatingSerializer(rating)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-      except:
-        if request.user.is_female:
-          rating = VisitRating.objects.create(rating2=request.data['stars'], rated_date=date)
-        else:
-          rating = VisitRating.objects.create(rating1=request.data['stars'], rated_date=date)
-        serializer = VisitRatingSerializer(rating)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+      rating = VisitRating.objects.get(rated_date=date)
+      if request.user.is_female:
+        rating.rating1 = request.data['stars']
+        rating.save()
+      else:
+        rating.rating2 = request.data['stars']
+        rating.save()
+      serializer = VisitRatingSerializer(rating)
+      return Response(serializer.data, status=status.HTTP_200_OK)
     else:
       response = {'message': 'Please provide all details'}
       return Response(response, status=status.HTTP_400_BAD_REQUEST)
