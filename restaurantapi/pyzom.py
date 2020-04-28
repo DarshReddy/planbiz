@@ -74,6 +74,8 @@ class GetRst:
             ["nearby_restaurants","restaurant","url"])
         cuisines = Exjson.extract_element_from_json(response,
             ["nearby_restaurants","restaurant","cuisines"])
+        rating = Exjson.extract_element_from_json(response,
+            ["nearby_restaurants","restaurant","user_rating","aggregate_rating"])
         rst_list = []
 
         for b in args:
@@ -90,6 +92,7 @@ class GetRst:
                     jso["Name"]=data[x]
                     jso["Cuisines"]=cuisines[x]
                     jso["resID"]=rid[x]
+                    jso["Rating"]=rid[x]
                     rst_list.append(jso.copy())
             else:
                 jso = {}
@@ -100,6 +103,7 @@ class GetRst:
                 jso["Name"]=data[x]
                 jso["Cuisines"]=cuisines[x]
                 jso["resID"]=rid[x]
+                jso["Rating"]=rid[x]
                 rst_list.append(jso.copy())
 
         return rst_list

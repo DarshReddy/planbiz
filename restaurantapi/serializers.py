@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
 class RestaurantSerializer(serializers.ModelSerializer):
   class Meta:
     model = Restaurant
-    fields = ('resID', 'Name', 'Url', 'Locality', 'Avg_cost', 'Cuisines', 'Img_url','no_dates')
+    fields = ('resID', 'Name', 'Url', 'Locality', 'Avg_cost', 'Cuisines', 'Img_url','no_dates','Rating')
 
 class HasVisitedSerializer(serializers.ModelSerializer):
   rest = serializers.SerializerMethodField()

@@ -88,6 +88,7 @@ class Restaurant(models.Model):
   Avg_cost = models.IntegerField()
   Cuisines = models.CharField(max_length=256)
   Img_url = models.CharField(max_length=256, blank=True)
+  Rating = models.FloatField(max_length=256, default=0.0)
 
   def no_dates(self):
     dates = DateMatch.objects.filter(restaurant=self)
