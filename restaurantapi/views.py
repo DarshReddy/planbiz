@@ -22,7 +22,10 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
       if 'token' and 'is_female' in request.data:
-        user = MyUser.objects.create(email=request.data['email'],is_female=request.data['is_female'])
+        if 'img_url' in request.data:
+          user = MyUser.objects.create(email=request.data['email'],is_female=request.data['is_female'],img_url=request.data['img_url'])
+        else:
+          user = MyUser.objects.create(email=request.data['email'],is_female=request.data['is_female'])
         user.set_password(request.data['password'])
         user.save()
         fcm = FCMDevice.objects.create(registration_id=request.data['token'],user=user, type='android')
@@ -193,6 +196,7 @@ class DateMatchViewSet(viewsets.ModelViewSet):
       visit = HasVisited.objects.create(user=request.user,restaurant=date.restaurant)
     visit.save()
     if request.user.is_female:
+      date.girl = request.user
       fcm = FCMDevice.objects.get(user=date.guy)
       fcm.send_message(data={"call_frag":2,"pk":pk,"is_female":False,"datemail":request.user.email})
       date.save()

@@ -7,7 +7,7 @@ from .models import Restaurant, HasVisited, VisitRating, DateMatch, MyUser
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = MyUser
-    fields = ('id', 'email', 'password','is_female','avg_rating')
+    fields = ('id', 'email', 'password','is_female','img_url','avg_rating')
     extra_kwargs = {'password': {'write_only': True,
     'required': True}}
 
@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
 class RestaurantSerializer(serializers.ModelSerializer):
   class Meta:
     model = Restaurant
-    fields = ('resID', 'Name', 'Url', 'Locality', 'Avg_cost', 'Cuisines', 'Img_url')
+    fields = ('resID', 'Name', 'Url', 'Locality', 'Avg_cost', 'Cuisines', 'Img_url','no_dates')
 
 class HasVisitedSerializer(serializers.ModelSerializer):
   rest = serializers.SerializerMethodField()

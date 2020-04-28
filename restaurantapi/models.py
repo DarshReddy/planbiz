@@ -37,6 +37,7 @@ class MyUserManager(BaseUserManager):
 class MyUser(AbstractBaseUser):
   email = models.EmailField(max_length=255,unique=True,default='email@mail.com')
   is_female = models.BooleanField(default=False)
+  img_url = models.TextField(blank=True,max_length=512)
   is_active = models.BooleanField(default=True)
   is_admin = models.BooleanField(default=False)
 
@@ -87,6 +88,10 @@ class Restaurant(models.Model):
   Avg_cost = models.IntegerField()
   Cuisines = models.CharField(max_length=256)
   Img_url = models.CharField(max_length=256, blank=True)
+
+  def no_dates(self):
+    dates = DateMatch.objects.filter(restaurant=self)
+    return len(dates)
 
 class HasVisited(models.Model):
   user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
