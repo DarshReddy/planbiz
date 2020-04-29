@@ -22,10 +22,14 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
       if 'token' and 'is_female' in request.data:
-        if 'img_url' in request.data:
-          user = MyUser.objects.create(email=request.data['email'],is_female=request.data['is_female'],img_url=request.data['img_url'])
-        else:
-          user = MyUser.objects.create(email=request.data['email'],is_female=request.data['is_female'])
+        user = MyUser.objects.create(email=request.data['email'],is_female=request.data['is_female'])
+        if 'img_url' and 'phone' in request.data:
+          user.img_url = request.data['img_url']
+          user.phone = request.data['phone']
+        elif 'img_url' in request.data:
+          user.img_url = request.data['img_url']
+        elif 'phone' in request.data:
+          user.phone = request.data['phone']
         user.set_password(request.data['password'])
         user.save()
         fcm = FCMDevice.objects.create(registration_id=request.data['token'],user=user, type='android')
@@ -47,8 +51,10 @@ class CustomAuthToken(ObtainAuthToken):
         fcm.registration_id = request.data['token']
         fcm.save()
         token, created = Token.objects.get_or_create(user=user)
+        serialize = UserSerializer(user)
         return Response({
-            'token': token.key
+            'token': token.key,
+            'user': serialize.data
         })
 
 class RestaurantViewSet(viewsets.ModelViewSet):

@@ -1,18 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractBaseUser, BaseUserManager
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from django.conf import settings
 from fcm_django.models import FCMDevice
+from django.utils.translation import ugettext_lazy as _ 
 
 # Create your models here.
 class MyUserManager(BaseUserManager):
     def create_user(self, email, is_female, password=None):
         if not email:
-            raise ValueError('Users must have an email address')
+            raise ValueError('Users must have an username')
 
         user = self.model(
-            email=self.normalize_email(email),
+            email = email,
             is_female = is_female,
         )
         
@@ -34,8 +36,22 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+class MyValidator(UnicodeUsernameValidator):
+  regex = r'^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$'
+
 class MyUser(AbstractBaseUser):
-  email = models.EmailField(max_length=255,unique=True,default='email@mail.com')
+  username_validator = MyValidator()
+  email = models.CharField(
+      _('username'),
+      max_length=150,
+      unique=True,
+      help_text=_('Instagram like username.'),
+      validators=[username_validator],
+          error_messages={
+          'unique': _("A user with that username already exists."),
+      },
+  )
+  phone = models.IntegerField(unique=True,null=True)
   is_female = models.BooleanField(default=False)
   img_url = models.TextField(blank=True,max_length=512)
   is_active = models.BooleanField(default=True)
