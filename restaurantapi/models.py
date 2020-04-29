@@ -51,7 +51,7 @@ class MyUser(AbstractBaseUser):
           'unique': _("A user with that username already exists."),
       },
   )
-  phone = models.IntegerField(unique=True,null=True)
+  phone = models.CharField(max_length=32,unique=True,null=True)
   is_female = models.BooleanField(default=False)
   img_url = models.TextField(blank=True,max_length=512)
   is_active = models.BooleanField(default=True)
