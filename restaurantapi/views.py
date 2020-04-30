@@ -208,7 +208,7 @@ class DateMatchViewSet(viewsets.ModelViewSet):
     try:
       visitgirl = HasVisited.objects.get(user=date.girl,restaurant=date.restaurant)
     except:
-      visitgirl = HasVisited.objects.create(user=date.guy,restaurant=date.restaurant)
+      visitgirl = HasVisited.objects.create(user=date.girl,restaurant=date.restaurant)
     visitgirl.save()
     try:
       vserializer = VisitRatingSerializer(VisitRating.objects.get(rated_date=date))
