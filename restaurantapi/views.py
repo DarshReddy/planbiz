@@ -190,17 +190,6 @@ class DateMatchViewSet(viewsets.ModelViewSet):
 
     date = DateMatch.objects.get(id=pk)
     date.dateaccepted = True
-
-    try:
-      visitguy = HasVisited.objects.get(user=date.guy,restaurant=date.restaurant)
-    except:
-      visitguy = HasVisited.objects.create(user=date.guy,restaurant=date.restaurant)
-      visitguy.save()
-    try:
-      visitgirl = HasVisited.objects.get(user=date.girl,restaurant=date.restaurant)
-    except:
-      visitgirl = HasVisited.objects.create(user=date.guy,restaurant=date.restaurant)
-      visitgirl.save()
     if request.user.is_female:
       date.girl = request.user
       fcm = FCMDevice.objects.get(user=date.guy)
@@ -211,6 +200,16 @@ class DateMatchViewSet(viewsets.ModelViewSet):
       fcm = FCMDevice.objects.get(user=date.girl)
       fcm.send_message(data={"call_frag":2,"pk":pk,"is_female":True,"datemail":request.user.email})
       date.save()
+    try:
+      visitguy = HasVisited.objects.get(user=date.guy,restaurant=date.restaurant)
+    except:
+      visitguy = HasVisited.objects.create(user=date.guy,restaurant=date.restaurant)
+    visitguy.save()
+    try:
+      visitgirl = HasVisited.objects.get(user=date.girl,restaurant=date.restaurant)
+    except:
+      visitgirl = HasVisited.objects.create(user=date.guy,restaurant=date.restaurant)
+    visitgirl.save()
     try:
       vserializer = VisitRatingSerializer(VisitRating.objects.get(rated_date=date))
     except:
