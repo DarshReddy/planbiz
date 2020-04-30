@@ -191,10 +191,15 @@ class DateMatchViewSet(viewsets.ModelViewSet):
     date = DateMatch.objects.get(id=pk)
     date.dateaccepted = True
     try:
-      visit = HasVisited.objects.get(user=request.user,restaurant=date.restaurant)
+      visitguy = HasVisited.objects.get(user=date.guy,restaurant=date.restaurant)
     except:
-      visit = HasVisited.objects.create(user=request.user,restaurant=date.restaurant)
-    visit.save()
+      visitguy = HasVisited.objects.create(user=date.guy,restaurant=date.restaurant)
+    try:
+      visitgirl = HasVisited.objects.get(user=date.girl,restaurant=date.restaurant)
+    except:
+      visitgirl = HasVisited.objects.create(user=date.guy,restaurant=date.restaurant)
+    visitguy.save()
+    visitgirl.save()
     if request.user.is_female:
       date.girl = request.user
       fcm = FCMDevice.objects.get(user=date.guy)
