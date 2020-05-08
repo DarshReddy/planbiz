@@ -38,8 +38,16 @@ class UserViewSet(viewsets.ModelViewSet):
       else:
         response = {'message': 'provide all details'}
         Response(response, status=status.HTTP_400_BAD_REQUEST)
-        
 
+    def update(self, request, *args, **kwargs):
+      if 'img_url' in request.data:
+        user = MyUser.objects.get(email=request.data['email'])
+        user.img_url = request.data['img_url'];
+        user.save()
+        return Response({"message":"update successful"}, status=status.HTTP_200_OK)
+      else:
+        return Response({"message":"update unsucessful"}, status.HTTP_400_BAD_REQUEST)
+        
 class CustomAuthToken(ObtainAuthToken):
 
     def post(self, request, *args, **kwargs):

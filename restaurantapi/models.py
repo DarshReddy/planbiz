@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User, AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
@@ -53,6 +53,7 @@ class MyUser(AbstractBaseUser):
   )
   phone = models.CharField(max_length=32,unique=True,null=True)
   is_female = models.BooleanField(default=False)
+  age = models.IntegerField(default=19,null=False)
   img_url = models.TextField(blank=True,max_length=512)
   is_active = models.BooleanField(default=True)
   is_admin = models.BooleanField(default=False)
@@ -60,7 +61,7 @@ class MyUser(AbstractBaseUser):
   objects = MyUserManager()
 
   USERNAME_FIELD = 'email'
-  REQUIRED_FIELDS = ['is_female']
+  REQUIRED_FIELDS = ['is_female','age']
 
   def __str__(self):
         return self.email
